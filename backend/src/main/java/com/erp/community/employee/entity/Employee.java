@@ -27,7 +27,8 @@ public class Employee {
 
     private String department;
 
-    private String role;
+    @Column(name = "job_title")
+    private String jobTitle;
 
     private Double salary;
 
