@@ -1,0 +1,16 @@
+# Backend (Java/Maven)
+backend/target/
+backend/.idea/
+backend/*.iml
+backend/HELP.md
+
+# Frontend (Node/Vite)
+frontend/node_modules/
+frontend/dist/
+
+# OS
+.DS_Store
+
+# Environment/secrets — never commit these
+**/application-local.properties
+**/.env

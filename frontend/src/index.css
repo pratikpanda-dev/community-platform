@@ -1,0 +1,22 @@
+:root {
+  --bg: #F3F5F7;
+  --surface: #FFFFFF;
+  --ink: #16202B;
+  --ink-muted: #667085;
+  --accent: #0E6E5E;
+  --accent-soft: #E1F1EC;
+  --border: #E1E5EA;
+  --select: #B2660E;
+  --select-soft: #FBEEDD;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+}
