@@ -39,5 +39,5 @@ public class Attendance {
     private LocalDateTime checkOutTime;
 
     @Column(nullable = false)
-    private String status = "PRESENT"; // PRESENT, ABSENT
+    private String status = "ABSENT"; // PRESENT, ABSENT
 }

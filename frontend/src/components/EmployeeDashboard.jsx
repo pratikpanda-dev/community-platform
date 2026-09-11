@@ -88,10 +88,14 @@ export default function EmployeeDashboard() {
                                 <td>{emp.email}</td>
                                 <td>{emp.department}</td>
                                 <td>{emp.jobTitle}</td>
-                                <td>₹{emp.salary.toFixed(2)}</td>
+                                <td>₹{emp.salary != null ? emp.salary.toFixed(2) : "—"}</td>
                                 <td>
-                                    <button onClick={() => handleEdit(emp)}>Edit</button>
-                                    <button onClick={() => handleDelete(emp.id)}>Delete</button>
+                                    <button className="btn btn-primary" onClick={() => handleEdit(emp)}>
+                                        Edit
+                                    </button>
+                                    <button className="btn btn-danger" onClick={() => handleDelete(emp.id)}>
+                                        Delete
+                                    </button>
                                 </td>
                             </tr>
 
@@ -131,9 +135,9 @@ export default function EmployeeDashboard() {
                     value={form.salary}
                     onChange={(e) => updateFields("salary", e.target.value)}
                 />
-                <button onClick={handleEmployee}>{editingId ? "Update" : "Add"} </button>
+                <button className="btn btn-primary" onClick={handleEmployee}>{editingId ? "Update" : "Add"}</button>
                 {editingId && (
-                    <button onClick={handleCancelEdit}>Cancel</button>
+                    <button className="btn btn-ghost" onClick={handleCancelEdit}>Cancel</button>
                 )}
             </div>
         </div>

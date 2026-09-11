@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import EmployeeDashboard from "./components/EmployeeDashboard";
 import AmenityDashboard from "./components/AmenityDashboard";
+import AttendanceDashboard from "./components/AttendanceDashboard";
 import communityLogo from "./assets/community-logo-v3.png";
 
 function App() {
@@ -26,6 +27,12 @@ function App() {
             >
               Amenities
             </button>
+            <button
+              className={activeTab === "attendance" ? "tab-active" : ""}
+              onClick={() => setActiveTab("attendance")}
+            >
+              Attendance
+            </button>
           </div>
         </div>
       </nav>
@@ -33,6 +40,7 @@ function App() {
       <main className="page">
         {activeTab === "employees" && <EmployeeDashboard />}
         {activeTab === "amenities" && <AmenityDashboard />}
+        {activeTab === "attendance" && <AttendanceDashboard />}
       </main>
     </div>
   );
