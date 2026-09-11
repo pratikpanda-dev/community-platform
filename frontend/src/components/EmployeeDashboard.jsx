@@ -11,7 +11,7 @@ export default function EmployeeDashboard() {
         name: "",
         email: "",
         department: "",
-        role: "",
+        jobTitle: "",
         salary: ""
     });
 
@@ -29,7 +29,7 @@ export default function EmployeeDashboard() {
             name: employee.name,
             email: employee.email,
             department: employee.department,
-            role: employee.role,
+            jobTitle: employee.jobTitle,
             salary: employee.salary
         });
         setEditingId(employee.id);
@@ -37,7 +37,7 @@ export default function EmployeeDashboard() {
 
     function handleCancelEdit() {
         setEditingId(null);
-        setForm({ name: "", email: "", department: "", role: "", salary: "" });
+        setForm({ name: "", email: "", department: "", jobTitle: "", salary: "" });
     }
 
     async function fetchEmployees() {
@@ -63,7 +63,7 @@ export default function EmployeeDashboard() {
             const newEmployee = await employeeApi.createEmployee(form);
             setEmployees((prev) => [...prev, newEmployee]);
         }
-        setForm({ name: "", email: "", department: "", role: "", salary: "" });
+        setForm({ name: "", email: "", department: "", jobTitle: "", salary: "" });
     }
 
     return (
@@ -76,7 +76,7 @@ export default function EmployeeDashboard() {
                             <th>Name</th>
                             <th>Email</th>
                             <th>Department</th>
-                            <th>Role</th>
+                            <th>Job Title</th>
                             <th>Salary</th>
                             <th></th>
                         </tr>
@@ -87,11 +87,15 @@ export default function EmployeeDashboard() {
                                 <td>{emp.name}</td>
                                 <td>{emp.email}</td>
                                 <td>{emp.department}</td>
-                                <td>{emp.role}</td>
-                                <td>₹{emp.salary.toFixed(2)}</td>
+                                <td>{emp.jobTitle}</td>
+                                <td>₹{emp.salary != null ? emp.salary.toFixed(2) : "—"}</td>
                                 <td>
-                                    <button onClick={() => handleEdit(emp)}>Edit</button>
-                                    <button onClick={() => handleDelete(emp.id)}>Delete</button>
+                                    <button className="btn btn-primary" onClick={() => handleEdit(emp)}>
+                                        Edit
+                                    </button>
+                                    <button className="btn btn-danger" onClick={() => handleDelete(emp.id)}>
+                                        Delete
+                                    </button>
                                 </td>
                             </tr>
 
@@ -121,9 +125,9 @@ export default function EmployeeDashboard() {
                 />
                 <input
                     type="text"
-                    placeholder="Role"
-                    value={form.role}
-                    onChange={(e) => updateFields("role", e.target.value)}
+                    placeholder="Job Title"
+                    value={form.jobTitle}
+                    onChange={(e) => updateFields("jobTitle", e.target.value)}
                 />
                 <input
                     type="number"
@@ -131,9 +135,9 @@ export default function EmployeeDashboard() {
                     value={form.salary}
                     onChange={(e) => updateFields("salary", e.target.value)}
                 />
-                <button onClick={handleEmployee}>{editingId ? "Update" : "Add"} </button>
+                <button className="btn btn-primary" onClick={handleEmployee}>{editingId ? "Update" : "Add"}</button>
                 {editingId && (
-                    <button onClick={handleCancelEdit}>Cancel</button>
+                    <button className="btn btn-ghost" onClick={handleCancelEdit}>Cancel</button>
                 )}
             </div>
         </div>

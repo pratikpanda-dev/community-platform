@@ -1,0 +1,103 @@
+.attendance-header {
+  margin-bottom: 20px;
+}
+
+.attendance-eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 6px;
+}
+
+.attendance-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.checkin-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin: 20px 0;
+}
+
+.checkin-status-label {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin: 0 0 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.checkin-status-value {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.checkin-times {
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin: 4px 0 0;
+}
+
+.checkin-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.attendance-message {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.attendance-message-success {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.attendance-message-error {
+  background: #FBEAE7;
+  color: #B23B2E;
+}
+
+.summary-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 24px 0 12px;
+}
+
+.attendance-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.attendance-table thead th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.attendance-table tbody td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.attendance-table tbody tr:last-child td {
+  border-bottom: none;
+}
