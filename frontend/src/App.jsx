@@ -3,6 +3,8 @@ import "./App.css";
 import EmployeeDashboard from "./components/EmployeeDashboard";
 import AmenityDashboard from "./components/AmenityDashboard";
 import AttendanceDashboard from "./components/AttendanceDashboard";
+import ComplaintDashboard from "./components/ComplaintDashboard";
+
 import communityLogo from "./assets/community-logo-v3.png";
 
 function App() {
@@ -33,6 +35,12 @@ function App() {
             >
               Attendance
             </button>
+            <button
+              className={activeTab === "complaints" ? "tab-active" : ""}
+              onClick={() => setActiveTab("complaints")}
+            >
+              Complaints
+            </button>
           </div>
         </div>
       </nav>
@@ -41,6 +49,7 @@ function App() {
         {activeTab === "employees" && <EmployeeDashboard />}
         {activeTab === "amenities" && <AmenityDashboard />}
         {activeTab === "attendance" && <AttendanceDashboard />}
+        {activeTab === "complaints" && <ComplaintDashboard />}
       </main>
     </div>
   );
