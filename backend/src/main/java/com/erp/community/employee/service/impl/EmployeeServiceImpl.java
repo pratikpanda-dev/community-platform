@@ -68,7 +68,13 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new RuntimeException("Invalid email or password");
         }
 
-        String token = jwtUtil.generateToken(employee.getEmail());
+        String token = jwtUtil.generateToken(
+                employee.getEmail(),
+                employee.getId(),
+                employee.getSociety().getId(),
+                employee.getRole(),
+                employee.getName()
+        );
         return new LoginResponse(token, employee.getEmail());
     }
 

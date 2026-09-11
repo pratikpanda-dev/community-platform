@@ -43,5 +43,10 @@ public class Employee {
     @ManyToOne
     @JoinColumn(name = "unit_id")
     private Unit unit;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role = Role.RESIDENT;
+
 }
 

@@ -3,7 +3,7 @@ import { employeeApi } from "../api/employeeApi";
 
 import "./EmployeeDashboard.css";
 
-export default function EmployeeDashboard() {
+export default function EmployeeDashboard({ currentUser }) {
     const [employees, setEmployees] = useState([]);
 
     const [form, setForm] = useState({
@@ -41,7 +41,7 @@ export default function EmployeeDashboard() {
     }
 
     async function fetchEmployees() {
-        const data = await employeeApi.getAllEmployees(1); // Assuming societyId is 1 for demonstration
+        const data = await employeeApi.getAllEmployees(currentUser.societyId);
         setEmployees(data);
     }
 
@@ -49,7 +49,11 @@ export default function EmployeeDashboard() {
         setForm((prev) => ({ ...prev, [field]: value }));
     }
 
-    async function handleDelete(id) {
+    async function handleDelete(id, role) {
+        if(role === "ADMIN") {
+            alert("You cannot delete an admin employee.");
+            return;
+        }
         await employeeApi.removeEmployee(id);
         setEmployees((prev) => prev.filter((emp) => emp.id !== id));
         await fetchEmployees();
@@ -93,9 +97,11 @@ export default function EmployeeDashboard() {
                                     <button className="btn btn-primary" onClick={() => handleEdit(emp)}>
                                         Edit
                                     </button>
-                                    <button className="btn btn-danger" onClick={() => handleDelete(emp.id)}>
-                                        Delete
-                                    </button>
+                                    {currentUser.role === "ADMIN" && (
+                                        <button className="btn btn-danger" onClick={() => handleDelete(emp.id, emp.role)}>
+                                            Delete
+                                        </button>
+                                    )}
                                 </td>
                             </tr>
 

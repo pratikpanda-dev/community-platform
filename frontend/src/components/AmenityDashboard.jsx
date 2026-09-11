@@ -3,14 +3,11 @@ import { amenityApi } from "../api/amenityApi";
 import { bookingApi } from "../api/bookingApi";
 import "./AmenityDashboard.css";
 
-const SOCIETY_ID = 1;     // hardcoded until Sprint 6 auth
-const CURRENT_USER_ID = 1; // hardcoded until Sprint 6 auth
-
 function formatTime(t) {
   return t.slice(0, 5); // "10:00:00" -> "10:00"
 }
 
-export default function AmenityDashboard() {
+export default function AmenityDashboard({ currentUser }) {
   const [amenities, setAmenities] = useState([]);
   const [selectedAmenityId, setSelectedAmenityId] = useState(null);
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
@@ -22,12 +19,12 @@ export default function AmenityDashboard() {
   const [myBookings, setMyBookings] = useState([]);
 
   useEffect(() => {
-    amenityApi.getAll(SOCIETY_ID).then((data) => {
+    amenityApi.getAll(currentUser.societyId).then((data) => {
       setAmenities(data);
       if (data.length > 0) setSelectedAmenityId(data[0].id);
     });
     loadMyBookings();
-  }, []);
+  }, [currentUser.societyId]);
 
   useEffect(() => {
     if (!selectedAmenityId) return;
@@ -56,7 +53,7 @@ export default function AmenityDashboard() {
   }
 
   async function loadMyBookings() {
-    const data = await bookingApi.getMyBookings(CURRENT_USER_ID);
+    const data = await bookingApi.getMyBookings(currentUser.employeeId, currentUser.societyId);
     setMyBookings(data.filter((b) => b.status !== "CANCELLED"));
   }
 
@@ -69,7 +66,7 @@ export default function AmenityDashboard() {
     try {
       await bookingApi.create({
         amenityId: selectedAmenityId,
-        bookedByUserId: CURRENT_USER_ID,
+        bookedByUserId: currentUser.employeeId,
         bookingDate: date,
         startTime: selectedSlot.startTime,
       });

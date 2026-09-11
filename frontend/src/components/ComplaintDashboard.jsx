@@ -2,16 +2,13 @@ import { useEffect, useState } from "react";
 import { complaintApi } from "../api/complaintApi";
 import "./ComplaintDashboard.css";
 
-const SOCIETY_ID = 1;
-const CURRENT_EMPLOYEE_ID = 52; // Rohit Sharma — hardcoded until Sprint 6 auth
-
 const CATEGORIES = ["PLUMBING", "ELECTRICAL", "SECURITY", "OTHER"];
 const PRIORITIES = ["LOW", "MEDIUM", "HIGH"];
 const STATUSES = ["OPEN", "IN_PROGRESS", "RESOLVED"];
 
 const EMPTY_FORM = { category: "PLUMBING", description: "", priority: "MEDIUM" };
 
-export default function ComplaintDashboard() {
+export default function ComplaintDashboard({ currentUser }) {
   const [complaints, setComplaints] = useState([]);
   const [statusFilter, setStatusFilter] = useState("");
   const [form, setForm] = useState(EMPTY_FORM);
@@ -19,10 +16,10 @@ export default function ComplaintDashboard() {
 
   useEffect(() => {
     loadComplaints();
-  }, [statusFilter]);
+  }, [statusFilter, currentUser.societyId]);
 
   async function loadComplaints() {
-    const data = await complaintApi.getAll(SOCIETY_ID, statusFilter || null);
+    const data = await complaintApi.getAll(currentUser.societyId, statusFilter || null);
     setComplaints(data);
   }
 
@@ -37,8 +34,8 @@ export default function ComplaintDashboard() {
     setSubmitting(true);
     try {
       await complaintApi.create({
-        society: { id: SOCIETY_ID },
-        raisedBy: { id: CURRENT_EMPLOYEE_ID },
+        society: { id: currentUser.societyId },
+        raisedBy: { id: currentUser.employeeId },
         category: form.category,
         description: form.description,
         priority: form.priority,

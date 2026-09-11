@@ -1,17 +1,8 @@
-const BASE_URL = "http://localhost:8080/api/amenities";
+import { apiClient } from "./apiClient";
 
-async function handleResponse(res) {
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(text || `Request failed with status ${res.status}`);
-  }
-  return res.json();
-}
+const PATH = "/api/amenities";
 
 export const amenityApi = {
-  getAll: (societyId) =>
-    fetch(`${BASE_URL}?societyId=${societyId}`).then(handleResponse),
-
-  getAvailability: (amenityId, date) =>
-    fetch(`${BASE_URL}/${amenityId}/availability?date=${date}`).then(handleResponse),
+  getAll: (societyId) => apiClient.get(`${PATH}?societyId=${societyId}`),
+  getAvailability: (amenityId, date) => apiClient.get(`${PATH}/${amenityId}/availability?date=${date}`),
 };

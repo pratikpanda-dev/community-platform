@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { attendanceApi } from "../api/attendanceApi";
 import "./AttendanceDashboard.css";
 
-const CURRENT_EMPLOYEE_ID = 52; // Rohit Sharma — hardcoded until Sprint 6 auth
+//const CURRENT_EMPLOYEE_ID = 52; // Rohit Sharma — hardcoded until Sprint 6 auth
 
-export default function AttendanceDashboard() {
+export default function AttendanceDashboard({ currentUser }) {
   const [myAttendance, setMyAttendance] = useState(null);
   const [summary, setSummary] = useState([]);
   const [message, setMessage] = useState(null);
@@ -19,7 +19,7 @@ export default function AttendanceDashboard() {
     setSummary(data);
 
     const mine = data.find(
-      (a) => a.staffProfile.employee.id === CURRENT_EMPLOYEE_ID
+      (a) => a.staffProfile.employee.id === currentUser.employeeId
     );
     setMyAttendance(mine ?? null);
   }
@@ -28,7 +28,7 @@ export default function AttendanceDashboard() {
     setLoading(true);
     setMessage(null);
     try {
-      await attendanceApi.checkIn(CURRENT_EMPLOYEE_ID);
+      await attendanceApi.checkIn(currentUser.employeeId);
       setMessage({ type: "success", text: "Checked in successfully" });
       await loadSummary();
     } catch (err) {
@@ -42,7 +42,7 @@ export default function AttendanceDashboard() {
     setLoading(true);
     setMessage(null);
     try {
-      await attendanceApi.checkOut(CURRENT_EMPLOYEE_ID);
+      await attendanceApi.checkOut(currentUser.employeeId);
       setMessage({ type: "success", text: "Checked out successfully" });
       await loadSummary();
     } catch (err) {
