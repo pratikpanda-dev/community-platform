@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 import EmployeeDashboard from "./components/EmployeeDashboard";
+import HomeDashboard from "./components/HomeDashboard";
 import AmenityDashboard from "./components/AmenityDashboard";
 import AttendanceDashboard from "./components/AttendanceDashboard";
 import ComplaintDashboard from "./components/ComplaintDashboard";
@@ -10,7 +11,7 @@ import { authStorage } from "./auth/authStorage";
 import communityLogo from "./assets/community-logo-v3.png";
 
 function App() {
-  const [activeTab, setActiveTab] = useState("employees");
+  const [activeTab, setActiveTab] = useState("home");
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
@@ -23,13 +24,13 @@ function App() {
   function handleLoginSuccess() {
     const payload = authStorage.getPayload();
     setCurrentUser(payload);
-    setActiveTab("employees");
+    setActiveTab("home");
   }
 
   function handleLogout() {
     authStorage.clearToken();
     setCurrentUser(null);
-    setActiveTab("employees");
+    setActiveTab("home");
   }
 
   function getFirstName(fullName) {
@@ -41,6 +42,8 @@ function App() {
     return <LoginPage onLoginSuccess={handleLoginSuccess} />;
   }
 
+  const isAdmin = currentUser.role === "ADMIN";
+
   return (
     <div className="app">
       <nav className="navbar">
@@ -48,9 +51,14 @@ function App() {
           <img src={communityLogo} alt="Community" className="app-logo-img" />
 
           <div className="tabs">
-            <button className={activeTab === "employees" ? "tab-active" : ""} onClick={() => setActiveTab("employees")}>
-              Employees
+            <button className={activeTab === "home" ? "tab-active" : ""} onClick={() => setActiveTab("home")}>
+              Home
             </button>
+            {isAdmin && (
+              <button className={activeTab === "employees" ? "tab-active" : ""} onClick={() => setActiveTab("employees")}>
+                Employees
+              </button>
+            )}
             <button className={activeTab === "amenities" ? "tab-active" : ""} onClick={() => setActiveTab("amenities")}>
               Amenities
             </button>
@@ -73,7 +81,8 @@ function App() {
       </nav>
 
       <main className="page">
-        {activeTab === "employees" && <EmployeeDashboard currentUser={currentUser} />}
+        {activeTab === "home" && <HomeDashboard currentUser={currentUser} onNavigate={setActiveTab} />}
+        {activeTab === "employees" && isAdmin && <EmployeeDashboard currentUser={currentUser} />}
         {activeTab === "amenities" && <AmenityDashboard currentUser={currentUser} />}
         {activeTab === "attendance" && <AttendanceDashboard currentUser={currentUser} />}
         {activeTab === "complaints" && <ComplaintDashboard currentUser={currentUser} />}

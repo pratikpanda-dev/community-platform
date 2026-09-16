@@ -5,6 +5,7 @@ import "./AttendanceDashboard.css";
 //const CURRENT_EMPLOYEE_ID = 52; // Rohit Sharma — hardcoded until Sprint 6 auth
 
 export default function AttendanceDashboard({ currentUser }) {
+  const isAdmin = currentUser.role === "ADMIN";
   const [myAttendance, setMyAttendance] = useState(null);
   const [summary, setSummary] = useState([]);
   const [message, setMessage] = useState(null);
@@ -16,9 +17,14 @@ export default function AttendanceDashboard({ currentUser }) {
 
   async function loadSummary() {
     const data = await attendanceApi.getTodaySummary();
-    setSummary(data);
+    // The API enforces this rule. Retain the same filter in the UI so an
+    // outdated server response can never render another staff member's data.
+    const visibleSummary = isAdmin
+      ? data
+      : data.filter((a) => a.staffProfile.employee.id === currentUser.employeeId);
+    setSummary(visibleSummary);
 
-    const mine = data.find(
+    const mine = visibleSummary.find(
       (a) => a.staffProfile.employee.id === currentUser.employeeId
     );
     setMyAttendance(mine ?? null);
@@ -109,7 +115,7 @@ export default function AttendanceDashboard({ currentUser }) {
         </div>
       )}
 
-      <h3 className="summary-title">Today's Summary</h3>
+      <h3 className="summary-title">{isAdmin ? "Today's Summary" : "My Summary"}</h3>
       <div className="table-card">
         <table className="attendance-table">
           <thead>

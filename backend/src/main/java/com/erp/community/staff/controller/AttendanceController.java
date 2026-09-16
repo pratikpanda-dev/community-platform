@@ -1,8 +1,11 @@
 package com.erp.community.staff.controller;
 
+import com.erp.community.employee.entity.Role;
+import com.erp.community.security.AuthUser;
 import com.erp.community.staff.entity.Attendance;
 import com.erp.community.staff.service.AttendanceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +39,14 @@ public class AttendanceController {
     }
 
     @GetMapping("/summary")
-    public ResponseEntity<List<Attendance>> getTodaySummary() {
-        return ResponseEntity.ok(attendanceService.getTodaySummary());
+    public ResponseEntity<List<Attendance>> getTodaySummary(Authentication authentication) {
+        AuthUser currentUser = (AuthUser) authentication.getPrincipal();
+        boolean isAdmin = currentUser.getRole() == Role.ADMIN;
+
+        return ResponseEntity.ok(attendanceService.getTodaySummary(
+                currentUser.getEmployeeId(),
+                currentUser.getSocietyId(),
+                isAdmin
+        ));
     }
 }

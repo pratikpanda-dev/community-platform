@@ -59,7 +59,15 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public List<Attendance> getTodaySummary() {
-        return attendanceRepository.findByAttendanceDate(LocalDate.now());
+    public List<Attendance> getTodaySummary(Long employeeId, Long societyId, boolean isAdmin) {
+        LocalDate today = LocalDate.now();
+
+        if (isAdmin) {
+            return attendanceRepository.findByAttendanceDateAndStaffProfileEmployeeSocietyId(today, societyId);
+        }
+
+        return attendanceRepository.findByAttendanceDateAndStaffProfileEmployeeId(today, employeeId)
+                .map(List::of)
+                .orElseGet(List::of);
     }
 }
