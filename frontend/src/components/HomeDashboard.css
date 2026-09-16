@@ -9,6 +9,17 @@
   padding: 36px;
 }
 
+.home-hero-header {
+  align-items: flex-start;
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.home-add-employee {
+  flex-shrink: 0;
+}
+
 .home-eyebrow {
   color: var(--accent);
   font-size: 12px;
@@ -87,6 +98,99 @@
   padding-top: 16px;
 }
 
+.employee-modal-backdrop {
+  align-items: center;
+  background: rgba(20, 29, 43, 0.46);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 20px;
+  position: fixed;
+  z-index: 30;
+}
+
+.employee-modal {
+  background: var(--surface);
+  border-radius: 12px;
+  box-shadow: 0 20px 48px rgba(20, 29, 43, 0.22);
+  max-width: 610px;
+  padding: 24px;
+  width: 100%;
+}
+
+.employee-modal-header {
+  align-items: flex-start;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.employee-modal-header h2 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.employee-modal-header p {
+  color: var(--ink-muted);
+  font-size: 14px;
+  margin: 5px 0 0;
+}
+
+.employee-modal-close {
+  background: transparent;
+  border: 0;
+  color: var(--ink-muted);
+  cursor: pointer;
+  font-size: 26px;
+  line-height: 1;
+  padding: 0 3px;
+}
+
+.employee-form-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.employee-form-grid label {
+  color: var(--ink-muted);
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  font-weight: 600;
+  gap: 6px;
+}
+
+.employee-form-grid input,
+.employee-form-grid select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--ink);
+  font: inherit;
+  padding: 9px 10px;
+}
+
+.employee-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+.employee-form-message {
+  border-radius: 8px;
+  font-size: 14px;
+  margin: 0 0 16px;
+  padding: 10px 12px;
+}
+
+.employee-form-message-error {
+  background: #FBEAE7;
+  color: #B23B2E;
+}
+
 @media (max-width: 768px) {
   .home-hero {
     padding: 24px;
@@ -94,5 +198,14 @@
 
   .home-hero h1 {
     font-size: 25px;
+  }
+
+  .home-hero-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .employee-form-grid {
+    grid-template-columns: 1fr;
   }
 }

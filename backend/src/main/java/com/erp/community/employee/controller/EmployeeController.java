@@ -1,10 +1,14 @@
 package com.erp.community.employee.controller;
 
 import com.erp.community.employee.entity.Employee;
+import com.erp.community.society.entity.Society;
+import com.erp.community.society.repository.SocietyRepository;
+import com.erp.community.security.AuthUser;
 import com.erp.community.employee.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +20,9 @@ public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
+
+    @Autowired
+    private SocietyRepository societyRepository;
 
     @GetMapping("/{id}")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id){
@@ -31,7 +38,11 @@ public class EmployeeController {
     }*/
 
     @PostMapping(value = "create")
-    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee){
+    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee, Authentication authentication){
+        AuthUser currentUser = (AuthUser) authentication.getPrincipal();
+        Society society = societyRepository.findById(currentUser.getSocietyId())
+                .orElseThrow(() -> new RuntimeException("Society not found"));
+        employee.setSociety(society);
         return ResponseEntity.ok().body(employeeService.createEmployee(employee));
     }
     @PreAuthorize("hasRole('ADMIN')")

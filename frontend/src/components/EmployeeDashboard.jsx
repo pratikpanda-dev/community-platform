@@ -58,15 +58,10 @@ export default function EmployeeDashboard({ currentUser }) {
         setEmployees((prev) => prev.filter((emp) => emp.id !== id));
         await fetchEmployees();
     }
-    async function handleEmployee() {
-        if (editingId) {
-            const updatedEmployee = await employeeApi.updateEmployee(editingId, form);
-            setEmployees((prev) => prev.map((emp) => (emp.id === editingId ? updatedEmployee : emp)));
-            setEditingId(null);
-        } else {
-            const newEmployee = await employeeApi.createEmployee(form);
-            setEmployees((prev) => [...prev, newEmployee]);
-        }
+    async function handleUpdateEmployee() {
+        const updatedEmployee = await employeeApi.updateEmployee(editingId, form);
+        setEmployees((prev) => prev.map((emp) => (emp.id === editingId ? updatedEmployee : emp)));
+        setEditingId(null);
         setForm({ name: "", email: "", department: "", jobTitle: "", salary: "" });
     }
 
@@ -109,8 +104,9 @@ export default function EmployeeDashboard({ currentUser }) {
                     </tbody>
                 </table>
             </div>
+            {editingId && (
             <div className="form-card">
-                <h3>Add Employee</h3>
+                <h3>Edit Employee</h3>
                 <input
                     type="text"
                     placeholder="Name"
@@ -141,11 +137,10 @@ export default function EmployeeDashboard({ currentUser }) {
                     value={form.salary}
                     onChange={(e) => updateFields("salary", e.target.value)}
                 />
-                <button className="btn btn-primary" onClick={handleEmployee}>{editingId ? "Update" : "Add"}</button>
-                {editingId && (
-                    <button className="btn btn-ghost" onClick={handleCancelEdit}>Cancel</button>
-                )}
+                <button className="btn btn-primary" onClick={handleUpdateEmployee}>Update</button>
+                <button className="btn btn-ghost" onClick={handleCancelEdit}>Cancel</button>
             </div>
+            )}
         </div>
     );
 
