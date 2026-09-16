@@ -9,4 +9,5 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
     List<Complaint> findBySocietyId(Long societyId);
     List<Complaint> findBySocietyIdAndStatus(Long societyId, String status);
     List<Complaint> findBySocietyIdAndAssignedToId(Long societyId, Long assignedToId);
+    List<Complaint> findByRaisedById(Long raisedById);
 }

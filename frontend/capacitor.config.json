@@ -1,0 +1,9 @@
+{
+  "appId": "com.erp.community",
+  "appName": "Community",
+  "webDir": "dist",
+  "server": {
+    "cleartext": true,
+    "androidScheme": "http"
+  }
+}

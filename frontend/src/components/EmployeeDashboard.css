@@ -78,3 +78,25 @@
   display: flex;
   gap: 8px;
 }
+
+@media (max-width: 768px) {
+  .table-card {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .emp-table {
+    min-width: 600px;
+    width: 600px;
+  }
+
+  .form-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-card input {
+    width: 100%;
+  }
+}

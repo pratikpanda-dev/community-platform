@@ -23,11 +23,13 @@ function App() {
   function handleLoginSuccess() {
     const payload = authStorage.getPayload();
     setCurrentUser(payload);
+    setActiveTab("employees");
   }
 
   function handleLogout() {
     authStorage.clearToken();
     setCurrentUser(null);
+    setActiveTab("employees");
   }
 
   function getFirstName(fullName) {

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Community</string>
+    <string name="title_activity_main">Community</string>
+    <string name="package_name">com.erp.community</string>
+    <string name="custom_url_scheme">com.erp.community</string>
+</resources>

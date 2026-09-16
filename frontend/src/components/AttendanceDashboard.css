@@ -101,3 +101,21 @@
 .attendance-table tbody tr:last-child td {
   border-bottom: none;
 }
+@media (max-width: 768px) {
+  .table-card {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .attendance-table {
+    min-width: 600px;
+    width: 600px;
+  }
+
+  .checkin-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+}

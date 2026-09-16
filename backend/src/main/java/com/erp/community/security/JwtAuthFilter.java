@@ -1,5 +1,6 @@
 package com.erp.community.security;
 
+import com.erp.community.employee.entity.Role;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,14 +31,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             if (jwtUtil.isTokenValid(token)) {
                 String email = jwtUtil.extractEmail(token);
+                Long employeeId = jwtUtil.extractEmployeeId(token);
                 Long societyId = jwtUtil.extractSocietyId(token);
-                String role = jwtUtil.extractRole(token).name();
+                Role role = jwtUtil.extractRole(token);
+
+                AuthUser authUser = new AuthUser(email, employeeId, societyId, role);
+
                 List<SimpleGrantedAuthority> authorities =
-                        List.of(new SimpleGrantedAuthority("ROLE_" + role));
+                        List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
 
                 UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(email, null, authorities);
-                authToken.setDetails(societyId);
+                        new UsernamePasswordAuthenticationToken(authUser, null, authorities);
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }

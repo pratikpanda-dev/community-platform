@@ -4,7 +4,7 @@ import "./ComplaintDashboard.css";
 
 const CATEGORIES = ["PLUMBING", "ELECTRICAL", "SECURITY", "OTHER"];
 const PRIORITIES = ["LOW", "MEDIUM", "HIGH"];
-const STATUSES = ["OPEN", "IN_PROGRESS", "RESOLVED"];
+const STATUSES = ["OPEN", "IN_PROGRESS", "RESOLVED", "CLOSED"];
 
 const EMPTY_FORM = { category: "PLUMBING", description: "", priority: "MEDIUM" };
 
@@ -19,7 +19,7 @@ export default function ComplaintDashboard({ currentUser }) {
   }, [statusFilter, currentUser.societyId]);
 
   async function loadComplaints() {
-    const data = await complaintApi.getAll(currentUser.societyId, statusFilter || null);
+    const data = await complaintApi.getAll(statusFilter || null);
     setComplaints(data);
   }
 
@@ -34,8 +34,6 @@ export default function ComplaintDashboard({ currentUser }) {
     setSubmitting(true);
     try {
       await complaintApi.create({
-        society: { id: currentUser.societyId },
-        raisedBy: { id: currentUser.employeeId },
         category: form.category,
         description: form.description,
         priority: form.priority,
@@ -127,9 +125,15 @@ export default function ComplaintDashboard({ currentUser }) {
                     value={c.status}
                     onChange={(e) => handleStatusChange(c.id, e.target.value)}
                   >
-                    {STATUSES.map((s) => (
-                      <option key={s} value={s}>{s.replace("_", " ")}</option>
-                    ))}
+                    {STATUSES.map((s, i) => {
+                      const currentIndex = STATUSES.indexOf(c.status);
+                      const isPast = i < currentIndex;
+                      return (
+                        <option key={s} value={s} disabled={isPast}>
+                          {s.replace("_", " ")}
+                        </option>
+                      );
+                    })}
                   </select>
                 </td>
               </tr>
