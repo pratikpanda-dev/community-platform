@@ -5,6 +5,7 @@ import HomeDashboard from "./components/HomeDashboard";
 import AmenityDashboard from "./components/AmenityDashboard";
 import AttendanceDashboard from "./components/AttendanceDashboard";
 import ComplaintDashboard from "./components/ComplaintDashboard";
+import VisitorPassDashboard from "./components/VisitorPassDashboard";
 import LoginPage from "./components/LoginPage";
 import { authStorage } from "./auth/authStorage";
 
@@ -43,6 +44,7 @@ function App() {
   }
 
   const isAdmin = currentUser.role === "ADMIN";
+  const isResident = currentUser.role === "RESIDENT";
 
   return (
     <div className="app">
@@ -62,9 +64,16 @@ function App() {
             <button className={activeTab === "amenities" ? "tab-active" : ""} onClick={() => setActiveTab("amenities")}>
               Amenities
             </button>
-            <button className={activeTab === "attendance" ? "tab-active" : ""} onClick={() => setActiveTab("attendance")}>
-              Attendance
-            </button>
+            {!isResident && (
+              <button className={activeTab === "attendance" ? "tab-active" : ""} onClick={() => setActiveTab("attendance")}>
+                Attendance
+              </button>
+            )}
+            {isResident && (
+              <button className={activeTab === "visitor-passes" ? "tab-active" : ""} onClick={() => setActiveTab("visitor-passes")}>
+                Visitor Passes
+              </button>
+            )}
             <button className={activeTab === "complaints" ? "tab-active" : ""} onClick={() => setActiveTab("complaints")}>
               Complaints
             </button>
@@ -84,7 +93,8 @@ function App() {
         {activeTab === "home" && <HomeDashboard currentUser={currentUser} onNavigate={setActiveTab} />}
         {activeTab === "employees" && isAdmin && <EmployeeDashboard currentUser={currentUser} />}
         {activeTab === "amenities" && <AmenityDashboard currentUser={currentUser} />}
-        {activeTab === "attendance" && <AttendanceDashboard currentUser={currentUser} />}
+        {activeTab === "attendance" && !isResident && <AttendanceDashboard currentUser={currentUser} />}
+        {activeTab === "visitor-passes" && isResident && <VisitorPassDashboard />}
         {activeTab === "complaints" && <ComplaintDashboard currentUser={currentUser} />}
       </main>
     </div>

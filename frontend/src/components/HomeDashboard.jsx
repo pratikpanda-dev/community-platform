@@ -22,6 +22,7 @@ const quickLinks = [
 
 export default function HomeDashboard({ currentUser, onNavigate }) {
   const isAdmin = currentUser.role === "ADMIN";
+  const isResident = currentUser.role === "RESIDENT";
   const firstName = currentUser.name?.split(" ")[0] || "there";
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,7 +45,16 @@ export default function HomeDashboard({ currentUser, onNavigate }) {
           description: "Add, update, and manage community employees.",
         },
       ]
-    : quickLinks;
+    : isResident
+      ? [
+          ...quickLinks,
+          {
+            id: "visitor-passes",
+            title: "Visitor Passes",
+            description: "Create a pass for guests visiting your home.",
+          },
+        ]
+      : quickLinks;
 
   function closeCreateForm() {
     setIsCreateFormOpen(false);

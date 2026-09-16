@@ -1,0 +1,162 @@
+.visitor-pass-dashboard {
+  max-width: 900px;
+}
+
+.visitor-pass-header {
+  margin-bottom: 24px;
+}
+
+.visitor-pass-eyebrow {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin: 0 0 6px;
+  text-transform: uppercase;
+}
+
+.visitor-pass-header h1 {
+  font-size: 26px;
+  margin: 0;
+}
+
+.visitor-pass-header > p:last-child {
+  color: var(--ink-muted);
+  margin: 8px 0 0;
+}
+
+.visitor-pass-form,
+.visitor-pass-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.visitor-pass-form {
+  padding: 22px;
+}
+
+.visitor-pass-form h2,
+.visitor-pass-list-section h2 {
+  font-size: 17px;
+  margin: 0 0 16px;
+}
+
+.visitor-pass-fields {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 18px;
+}
+
+.visitor-pass-fields label {
+  color: var(--ink-muted);
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  font-weight: 600;
+  gap: 6px;
+}
+
+.visitor-pass-fields input {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font: inherit;
+  padding: 9px 10px;
+}
+
+.visitor-purpose {
+  grid-column: span 3;
+}
+
+.visitor-pass-message {
+  border-radius: 8px;
+  font-size: 14px;
+  margin-top: 16px;
+  padding: 11px 13px;
+}
+
+.visitor-pass-message-success {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.visitor-pass-message-error {
+  background: #FBEAE7;
+  color: #B23B2E;
+}
+
+.visitor-pass-list-section {
+  margin-top: 32px;
+}
+
+.visitor-pass-list {
+  display: grid;
+  gap: 10px;
+}
+
+.visitor-pass-card {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 18px;
+}
+
+.visitor-pass-card h3 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.visitor-pass-card p {
+  color: var(--ink-muted);
+  font-size: 13px;
+  margin: 5px 0 0;
+}
+
+.visitor-pass-card .visitor-pass-date {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.visitor-pass-code {
+  align-items: end;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.visitor-pass-code span {
+  color: var(--ink-muted);
+  font-size: 12px;
+}
+
+.visitor-pass-code strong {
+  color: var(--accent);
+  font-size: 15px;
+  letter-spacing: 0.04em;
+}
+
+.visitor-pass-empty {
+  color: var(--ink-muted);
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .visitor-pass-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .visitor-purpose {
+    grid-column: auto;
+  }
+
+  .visitor-pass-card {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .visitor-pass-code {
+    align-items: flex-start;
+  }
+}
