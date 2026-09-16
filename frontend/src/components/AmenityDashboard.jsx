@@ -7,10 +7,24 @@ function formatTime(t) {
   return t.slice(0, 5); // "10:00:00" -> "10:00"
 }
 
+function localDateString(now = new Date()) {
+  const timezoneOffsetMs = now.getTimezoneOffset() * 60 * 1000;
+  return new Date(now.getTime() - timezoneOffsetMs).toISOString().slice(0, 10);
+}
+
+function isPastSlot(date, startTime, now = new Date()) {
+  if (date < localDateString(now)) return true;
+  if (date > localDateString(now)) return false;
+
+  // The date-time string is deliberately parsed as local time, matching the
+  // date picker and the amenity's displayed opening hours.
+  return new Date(`${date}T${startTime}`) <= now;
+}
+
 export default function AmenityDashboard({ currentUser }) {
   const [amenities, setAmenities] = useState([]);
   const [selectedAmenityId, setSelectedAmenityId] = useState(null);
-  const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [date, setDate] = useState(() => localDateString());
   const [slots, setSlots] = useState([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [message, setMessage] = useState(null); // { type: 'success'|'error', text }
@@ -28,24 +42,34 @@ export default function AmenityDashboard({ currentUser }) {
 
   useEffect(() => {
     if (!selectedAmenityId) return;
+    setSelectedSlot(null);
     loadSlots();
   }, [selectedAmenityId, date]);
 
   async function loadSlots() {
     setLoadingSlots(true);
     setMessage(null);
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+
     try {
-      const data = await amenityApi.getAvailability(selectedAmenityId, date);
+      const data = await amenityApi.getAvailability(selectedAmenityId, date, controller.signal);
       setSlots(data);
     } catch (err) {
-      setMessage({ type: "error", text: err.message });
+      if (err.name === "AbortError") {
+        setMessage({ type: "error", text: "Request timed out. Please try again." });
+      } else {
+        setMessage({ type: "error", text: err.message });
+      }
     } finally {
+      clearTimeout(timeoutId);
       setLoadingSlots(false);
     }
   }
 
   function handleSlotClick(slot) {
-    if (!slot.available) return;
+    if (!slot.available || isPastSlot(date, slot.startTime)) return;
 
     const isSameSlot = selectedSlot?.startTime === slot.startTime;
     setSelectedSlot(isSameSlot ? null : slot);
@@ -59,6 +83,14 @@ export default function AmenityDashboard({ currentUser }) {
 
   async function handleConfirmBooking() {
     if (!selectedSlot) return;
+
+    // Keep this guard even though the UI disables past choices: time can pass
+    // after a slot was selected, or the date can be changed programmatically.
+    if (isPastSlot(date, selectedSlot.startTime)) {
+      setSelectedSlot(null);
+      setMessage({ type: "error", text: "Past time slots cannot be booked." });
+      return;
+    }
 
     setConfirming(true);
     setMessage(null);
@@ -117,7 +149,11 @@ export default function AmenityDashboard({ currentUser }) {
         <input
           type="date"
           value={date}
-          onChange={(e) => setDate(e.target.value)}
+          min={localDateString()}
+          onChange={(e) => {
+            const selectedDate = e.target.value;
+            setDate(selectedDate < localDateString() ? localDateString() : selectedDate);
+          }}
         />
       </div>
 
@@ -134,26 +170,31 @@ export default function AmenityDashboard({ currentUser }) {
       )}
 
       {loadingSlots ? (
-        <p className="amenity-loading">Loading slots\u2026</p>
+        <div className="amenity-loading-wrap">
+          <div className="spinner" />
+          Loading slots…
+        </div>
       ) : (
         <div className="slot-grid">
           {slots.map((slot) => {
             const isSelected = selectedSlot?.startTime === slot.startTime;
+            const slotIsPast = isPastSlot(date, slot.startTime);
+            const canBookSlot = slot.available && !slotIsPast;
             return (
               <button
                 key={slot.startTime}
-                className={`slot ${slot.available ? "slot-open" : "slot-taken"} ${isSelected ? "slot-selected" : ""}`}
-                disabled={!slot.available}
+                className={`slot ${canBookSlot ? "slot-open" : "slot-taken"} ${isSelected ? "slot-selected" : ""}`}
+                disabled={!canBookSlot}
                 onClick={() => handleSlotClick(slot)}
+                title={slotIsPast ? "This time slot has already passed" : undefined}
               >
                 {formatTime(slot.startTime)}
               </button>
             );
           })}
         </div>
-
       )}
-      {selectedSlot && (
+       {selectedSlot && (
         <div className="confirm-bar">
           <span>
             Selected: <strong>{formatTime(selectedSlot.startTime)} - {formatTime(selectedSlot.endTime)}</strong>

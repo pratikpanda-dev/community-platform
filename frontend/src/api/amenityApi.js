@@ -4,5 +4,6 @@ const PATH = "/api/amenities";
 
 export const amenityApi = {
   getAll: (societyId) => apiClient.get(`${PATH}?societyId=${societyId}`),
-  getAvailability: (amenityId, date) => apiClient.get(`${PATH}/${amenityId}/availability?date=${date}`),
+  getAvailability: (amenityId, date, signal) =>
+  apiClient.get(`${PATH}/${amenityId}/availability?date=${date}`, signal),
 };

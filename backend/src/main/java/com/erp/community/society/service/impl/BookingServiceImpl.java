@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -29,6 +30,15 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking createBooking(BookingRequest request) {
+        LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
+        boolean bookingIsInPast = request.getBookingDate().isBefore(today)
+                || (request.getBookingDate().isEqual(today) && !request.getStartTime().isAfter(now));
+
+        if (bookingIsInPast) {
+            throw new RuntimeException("Past dates and time slots cannot be booked");
+        }
+
         Amenity amenity = amenityRepository.findById(request.getAmenityId())
                 .orElseThrow(() -> new RuntimeException("Amenity not found"));
 

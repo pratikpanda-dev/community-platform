@@ -21,9 +21,10 @@ async function handleResponse(res) {
 }
 
 export const apiClient = {
-  get(path) {
+  get(path, signal) {
     return fetch(`${BASE_URL}${path}`, {
       headers: authHeaders(),
+      signal,
     }).then(handleResponse);
   },
 
