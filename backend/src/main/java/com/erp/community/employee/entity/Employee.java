@@ -2,7 +2,7 @@ package com.erp.community.employee.entity;
 
 import com.erp.community.society.entity.Society;
 import com.erp.community.society.entity.Unit;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,7 +32,7 @@ public class Employee {
 
     private Double salary;
 
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(nullable = false)
     private String password;
 
@@ -49,4 +49,3 @@ public class Employee {
     private Role role = Role.RESIDENT;
 
 }
-

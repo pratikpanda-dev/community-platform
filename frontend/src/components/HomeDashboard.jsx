@@ -61,7 +61,11 @@ export default function HomeDashboard({ currentUser, onNavigate }) {
   }
 
   function updateForm(field, value) {
-    setForm((current) => ({ ...current, [field]: value }));
+    setForm((current) => (
+      field === "role" && value === "RESIDENT"
+        ? { ...current, role: value, department: "", jobTitle: "", salary: "" }
+        : { ...current, [field]: value }
+    ));
   }
 
   async function handleCreateEmployee(event) {
@@ -72,7 +76,10 @@ export default function HomeDashboard({ currentUser, onNavigate }) {
     try {
       await employeeApi.createEmployee({
         ...form,
-        salary: Number(form.salary),
+        department: form.role === "RESIDENT" ? null : form.department,
+        jobTitle: form.role === "RESIDENT" ? null : form.jobTitle,
+        salary: form.role === "RESIDENT" ? null : Number(form.salary),
+        JobTitle: form.jobTitle === "RESIDENT" ? null : form.jobTitle,
       });
       closeCreateForm();
     } catch (error) {
@@ -148,9 +155,15 @@ export default function HomeDashboard({ currentUser, onNavigate }) {
                   <option value="WORKER">Worker</option>
                 </select>
               </label>
-              <label>Department<input required value={form.department} onChange={(event) => updateForm("department", event.target.value)} /></label>
-              <label>Job title<input required value={form.jobTitle} onChange={(event) => updateForm("jobTitle", event.target.value)} /></label>
-              <label>Salary<input required type="number" min="0" value={form.salary} onChange={(event) => updateForm("salary", event.target.value)} /></label>
+              {form.role !== "RESIDENT" && (
+                <label>Department<input required value={form.department} onChange={(event) => updateForm("department", event.target.value)} /></label>
+              )}
+              {form.role !== "RESIDENT" && (
+                <label>Job title<input required value={form.jobTitle} onChange={(event) => updateForm("jobTitle", event.target.value)} /></label>
+              )}
+              {form.role !== "RESIDENT" && (
+                <label>Salary<input required type="number" min="0" value={form.salary} onChange={(event) => updateForm("salary", event.target.value)} /></label>
+              )}
             </div>
 
             <div className="employee-modal-actions">

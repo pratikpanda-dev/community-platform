@@ -2,6 +2,7 @@ package com.erp.community.employee.service.impl;
 
 import com.erp.community.dto.LoginResponse;
 import com.erp.community.employee.entity.Employee;
+import com.erp.community.employee.entity.Role;
 import com.erp.community.employee.repository.EmployeeRepository;
 import com.erp.community.employee.service.EmployeeService;
 import com.erp.community.security.JwtUtil;
@@ -25,6 +26,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee createEmployee(Employee employee) {
+        if (employee.getRole() == Role.RESIDENT) {
+            employee.setDepartment(null);
+            employee.setJobTitle(null);
+            employee.setSalary(null);
+        }
         employee.setPassword(passwordEncoder.encode(employee.getPassword()));
         return employeeRepository.save(employee);
     }

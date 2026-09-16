@@ -5,6 +5,7 @@ import "./EmployeeDashboard.css";
 
 export default function EmployeeDashboard({ currentUser }) {
     const [employees, setEmployees] = useState([]);
+    const [roleFilter, setRoleFilter] = useState("ALL");
 
     const [form, setForm] = useState({
 
@@ -49,6 +50,10 @@ export default function EmployeeDashboard({ currentUser }) {
         setForm((prev) => ({ ...prev, [field]: value }));
     }
 
+    const visibleEmployees = roleFilter === "ALL"
+        ? employees
+        : employees.filter((employee) => employee.role === roleFilter);
+
     async function handleDelete(id, role) {
         if(role === "ADMIN") {
             alert("You cannot delete an admin employee.");
@@ -67,13 +72,26 @@ export default function EmployeeDashboard({ currentUser }) {
 
     return (
         <div className="emp-dashboard">
-            <h2 className="emp-dash-title">Employees</h2>
+            <div className="employee-toolbar">
+                <h2 className="emp-dash-title">Employees</h2>
+                <label className="employee-filter">
+                    Employee type
+                    <select value={roleFilter} onChange={(event) => setRoleFilter(event.target.value)}>
+                        <option value="ALL">All types</option>
+                        <option value="ADMIN">Admin</option>
+                        <option value="RESIDENT">Resident</option>
+                        <option value="SECURITY">Security</option>
+                        <option value="WORKER">Worker</option>
+                    </select>
+                </label>
+            </div>
             <div className="table-card">
                 <table className="emp-table">
                     <thead>
                         <tr>
                             <th>Name</th>
                             <th>Email</th>
+                            <th>Type</th>
                             <th>Department</th>
                             <th>Job Title</th>
                             <th>Salary</th>
@@ -81,10 +99,11 @@ export default function EmployeeDashboard({ currentUser }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {employees.map((emp) => (
+                        {visibleEmployees.map((emp) => (
                             <tr key={emp.id}>
                                 <td>{emp.name}</td>
                                 <td>{emp.email}</td>
+                                <td>{emp.role}</td>
                                 <td>{emp.department}</td>
                                 <td>{emp.jobTitle}</td>
                                 <td>₹{emp.salary != null ? emp.salary.toFixed(2) : "—"}</td>
