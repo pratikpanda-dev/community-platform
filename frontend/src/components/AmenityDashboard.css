@@ -1,4 +1,8 @@
 .amenity-header {
+  align-items: flex-start;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
   margin-bottom: 20px;
 }
 
@@ -214,4 +218,90 @@
   padding: 20px;
   color: var(--ink-muted);
   font-size: 13px;
+}
+
+.amenity-modal-backdrop {
+  align-items: center;
+  background: rgba(20, 29, 43, 0.46);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 20px;
+  position: fixed;
+  z-index: 30;
+}
+
+.amenity-modal {
+  background: var(--surface);
+  border-radius: 12px;
+  box-shadow: 0 20px 48px rgba(20, 29, 43, 0.22);
+  max-width: 560px;
+  padding: 24px;
+  width: 100%;
+}
+
+.amenity-modal-header {
+  align-items: flex-start;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.amenity-modal-header h2 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.amenity-modal-header p {
+  color: var(--ink-muted);
+  font-size: 14px;
+  margin: 5px 0 0;
+}
+
+.amenity-modal-close {
+  background: transparent;
+  border: 0;
+  color: var(--ink-muted);
+  cursor: pointer;
+  font-size: 26px;
+  line-height: 1;
+  padding: 0 3px;
+}
+
+.amenity-form-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.amenity-form-grid label {
+  color: var(--ink-muted);
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  font-weight: 600;
+  gap: 6px;
+}
+
+.amenity-form-grid input {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--ink);
+  font: inherit;
+  padding: 9px 10px;
+}
+
+.amenity-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+@media (max-width: 768px) {
+  .amenity-form-grid {
+    grid-template-columns: 1fr;
+  }
 }

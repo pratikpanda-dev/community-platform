@@ -16,6 +16,12 @@
   justify-content: space-between;
 }
 
+.home-hero-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 10px;
+}
+
 .home-add-employee {
   flex-shrink: 0;
 }
@@ -189,6 +195,11 @@
 .employee-form-message-error {
   background: #FBEAE7;
   color: #B23B2E;
+}
+
+.employee-form-message-success {
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 @media (max-width: 768px) {

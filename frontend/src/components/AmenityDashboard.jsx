@@ -22,6 +22,7 @@ function isPastSlot(date, startTime, now = new Date()) {
 }
 
 export default function AmenityDashboard({ currentUser }) {
+  const isAdmin = currentUser.role === "ADMIN";
   const [amenities, setAmenities] = useState([]);
   const [selectedAmenityId, setSelectedAmenityId] = useState(null);
   const [date, setDate] = useState(() => localDateString());
@@ -31,6 +32,16 @@ export default function AmenityDashboard({ currentUser }) {
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [confirming, setConfirming] = useState(false);
   const [myBookings, setMyBookings] = useState([]);
+  const [isAddAmenityOpen, setIsAddAmenityOpen] = useState(false);
+  const [creatingAmenity, setCreatingAmenity] = useState(false);
+  const [amenityFormMessage, setAmenityFormMessage] = useState(null);
+  const [amenityForm, setAmenityForm] = useState({
+    name: "",
+    capacity: "",
+    slotDurationMins: "60",
+    openingTime: "09:00",
+    closingTime: "18:00",
+  });
 
   useEffect(() => {
     amenityApi.getAll(currentUser.societyId).then((data) => {
@@ -123,6 +134,42 @@ export default function AmenityDashboard({ currentUser }) {
     await loadMyBookings();
     await loadSlots(); // the cancelled slot should now show as available again
   }
+
+  function closeAddAmenityForm() {
+    setIsAddAmenityOpen(false);
+    setAmenityFormMessage(null);
+    setAmenityForm({ name: "", capacity: "", slotDurationMins: "60", openingTime: "09:00", closingTime: "18:00" });
+  }
+
+  function updateAmenityField(field, value) {
+    setAmenityForm((prev) => ({ ...prev, [field]: value }));
+  }
+
+  async function handleCreateAmenity(event) {
+    event.preventDefault();
+    if (!amenityForm.name.trim()) return;
+
+    setCreatingAmenity(true);
+    setAmenityFormMessage(null);
+    try {
+      const created = await amenityApi.create({
+        name: amenityForm.name,
+        society: { id: currentUser.societyId },
+        capacity: Number(amenityForm.capacity),
+        slotDurationMins: Number(amenityForm.slotDurationMins),
+        openingTime: amenityForm.openingTime,
+        closingTime: amenityForm.closingTime,
+      });
+      setAmenities((prev) => [...prev, created]);
+      setSelectedAmenityId(created.id);
+      closeAddAmenityForm();
+    } catch (err) {
+      setAmenityFormMessage({ type: "error", text: err.message });
+    } finally {
+      setCreatingAmenity(false);
+    }
+  }
+
   const selectedAmenity = amenities.find((a) => a.id === selectedAmenityId);
 
   return (
@@ -132,6 +179,11 @@ export default function AmenityDashboard({ currentUser }) {
           <p className="amenity-eyebrow">Sprint 3 · Module 02</p>
           <h1 className="amenity-title">Amenities</h1>
         </div>
+        {isAdmin && (
+          <button className="btn btn-primary" onClick={() => setIsAddAmenityOpen(true)}>
+            Add Amenity
+          </button>
+        )}
       </header>
 
       <div className="amenity-controls">
@@ -243,6 +295,39 @@ export default function AmenityDashboard({ currentUser }) {
           </ul>
         )}
       </div>
+
+      {isAddAmenityOpen && (
+        <div className="amenity-modal-backdrop" role="presentation" onMouseDown={closeAddAmenityForm}>
+          <form className="amenity-modal" onSubmit={handleCreateAmenity} onMouseDown={(event) => event.stopPropagation()}>
+            <div className="amenity-modal-header">
+              <div>
+                <h2>Add Amenity</h2>
+                <p>Create a new bookable facility for your society.</p>
+              </div>
+              <button type="button" className="amenity-modal-close" onClick={closeAddAmenityForm} aria-label="Close add amenity form">
+                ×
+              </button>
+            </div>
+
+            {amenityFormMessage && (
+              <p className={`amenity-message amenity-message-${amenityFormMessage.type}`}>{amenityFormMessage.text}</p>
+            )}
+
+            <div className="amenity-form-grid">
+              <label>Name<input required value={amenityForm.name} onChange={(event) => updateAmenityField("name", event.target.value)} /></label>
+              <label>Capacity<input required type="number" min="1" value={amenityForm.capacity} onChange={(event) => updateAmenityField("capacity", event.target.value)} /></label>
+              <label>Slot duration (mins)<input required type="number" min="1" value={amenityForm.slotDurationMins} onChange={(event) => updateAmenityField("slotDurationMins", event.target.value)} /></label>
+              <label>Opening time<input required type="time" value={amenityForm.openingTime} onChange={(event) => updateAmenityField("openingTime", event.target.value)} /></label>
+              <label>Closing time<input required type="time" value={amenityForm.closingTime} onChange={(event) => updateAmenityField("closingTime", event.target.value)} /></label>
+            </div>
+
+            <div className="amenity-modal-actions">
+              <button type="button" className="btn-cancel-select" onClick={closeAddAmenityForm} disabled={creatingAmenity}>Cancel</button>
+              <button type="submit" className="btn-confirm-booking" disabled={creatingAmenity}>{creatingAmenity ? "Creating…" : "Create Amenity"}</button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

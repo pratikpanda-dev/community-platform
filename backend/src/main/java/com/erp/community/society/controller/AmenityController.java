@@ -7,6 +7,7 @@ import com.erp.community.society.service.AmenityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -33,5 +34,11 @@ public class AmenityController {
     @GetMapping
     public ResponseEntity<List<Amenity>> getAmenities(@RequestParam Long societyId) {
         return ResponseEntity.ok(amenityRepository.findBySocietyId(societyId));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping
+    public ResponseEntity<Amenity> create(@RequestBody Amenity amenity) {
+        return ResponseEntity.ok(amenityRepository.save(amenity));
     }
 }
