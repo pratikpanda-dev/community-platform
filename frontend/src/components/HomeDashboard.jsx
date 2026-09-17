@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { employeeApi } from "../api/employeeApi";
-import { societyApi } from "../api/societyApi";
 import "./HomeDashboard.css";
 
 const quickLinks = [
@@ -37,10 +36,6 @@ export default function HomeDashboard({ currentUser, onNavigate }) {
     salary: "",
     role: "RESIDENT",
   });
-  const [isCreateSocietyOpen, setIsCreateSocietyOpen] = useState(false);
-  const [creatingSociety, setCreatingSociety] = useState(false);
-  const [societyMessage, setSocietyMessage] = useState(null);
-  const [societyForm, setSocietyForm] = useState({ name: "", address: "", planType: "FREE" });
   const links = isAdmin
     ? [
         ...quickLinks,
@@ -83,33 +78,6 @@ export default function HomeDashboard({ currentUser, onNavigate }) {
     ));
   }
 
-  function closeCreateSocietyForm() {
-    setIsCreateSocietyOpen(false);
-    setSocietyMessage(null);
-    setSocietyForm({ name: "", address: "", planType: "FREE" });
-  }
-
-  function updateSocietyField(field, value) {
-    setSocietyForm((prev) => ({ ...prev, [field]: value }));
-  }
-
-  async function handleCreateSociety(event) {
-    event.preventDefault();
-    if (!societyForm.name.trim()) return;
-
-    setCreatingSociety(true);
-    setSocietyMessage(null);
-    try {
-      await societyApi.create(societyForm);
-      setSocietyMessage({ type: "success", text: `Society "${societyForm.name}" created` });
-      setSocietyForm({ name: "", address: "", planType: "FREE" });
-    } catch (err) {
-      setSocietyMessage({ type: "error", text: err.message });
-    } finally {
-      setCreatingSociety(false);
-    }
-  }
-
   async function handleCreateEmployee(event) {
     event.preventDefault();
     setIsSubmitting(true);
@@ -140,14 +108,9 @@ export default function HomeDashboard({ currentUser, onNavigate }) {
             <h1>Welcome back, {firstName}</h1>
           </div>
           {isAdmin && (
-            <div className="home-hero-actions">
-              <button className="btn btn-ghost home-add-employee" onClick={() => setIsCreateSocietyOpen(true)}>
-                Create Society
-              </button>
-              <button className="btn btn-primary home-add-employee" onClick={() => setIsCreateFormOpen(true)}>
-                Add Employee
-              </button>
-            </div>
+            <button className="btn btn-primary home-add-employee" onClick={() => setIsCreateFormOpen(true)}>
+              Add Employee
+            </button>
           )}
         </div>
         <p>
@@ -216,42 +179,6 @@ export default function HomeDashboard({ currentUser, onNavigate }) {
             <div className="employee-modal-actions">
               <button type="button" className="btn btn-ghost" onClick={closeCreateForm} disabled={isSubmitting}>Cancel</button>
               <button type="submit" className="btn btn-primary" disabled={isSubmitting}>{isSubmitting ? "Creating…" : "Create Employee"}</button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {isCreateSocietyOpen && (
-        <div className="employee-modal-backdrop" role="presentation" onMouseDown={closeCreateSocietyForm}>
-          <form className="employee-modal" onSubmit={handleCreateSociety} onMouseDown={(event) => event.stopPropagation()}>
-            <div className="employee-modal-header">
-              <div>
-                <h2>Create Society</h2>
-                <p>Register a new society on the platform.</p>
-              </div>
-              <button type="button" className="employee-modal-close" onClick={closeCreateSocietyForm} aria-label="Close create society form">
-                ×
-              </button>
-            </div>
-
-            {societyMessage && (
-              <p className={`employee-form-message employee-form-message-${societyMessage.type}`}>{societyMessage.text}</p>
-            )}
-
-            <div className="employee-form-grid">
-              <label>Name<input required value={societyForm.name} onChange={(event) => updateSocietyField("name", event.target.value)} /></label>
-              <label>Address<input value={societyForm.address} onChange={(event) => updateSocietyField("address", event.target.value)} /></label>
-              <label>Plan
-                <select value={societyForm.planType} onChange={(event) => updateSocietyField("planType", event.target.value)}>
-                  <option value="FREE">Free</option>
-                  <option value="PAID">Paid</option>
-                </select>
-              </label>
-            </div>
-
-            <div className="employee-modal-actions">
-              <button type="button" className="btn btn-ghost" onClick={closeCreateSocietyForm} disabled={creatingSociety}>Close</button>
-              <button type="submit" className="btn btn-primary" disabled={creatingSociety}>{creatingSociety ? "Creating…" : "Create Society"}</button>
             </div>
           </form>
         </div>
