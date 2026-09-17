@@ -53,7 +53,6 @@ export default function ComplaintDashboard({ currentUser }) {
   return (
     <div className="complaint-dash">
       <header className="complaint-header">
-        <p className="complaint-eyebrow">Sprint 5 · Module 04</p>
         <h1 className="complaint-title">Complaints</h1>
       </header>
 

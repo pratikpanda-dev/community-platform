@@ -176,7 +176,6 @@ export default function AmenityDashboard({ currentUser }) {
     <div className="amenity-dash">
       <header className="amenity-header">
         <div>
-          <p className="amenity-eyebrow">Sprint 3 · Module 02</p>
           <h1 className="amenity-title">Amenities</h1>
         </div>
         {isAdmin && (

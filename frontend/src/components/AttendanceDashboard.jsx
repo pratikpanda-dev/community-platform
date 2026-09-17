@@ -69,7 +69,6 @@ export default function AttendanceDashboard({ currentUser }) {
   return (
     <div className="attendance-dash">
       <header className="attendance-header">
-        <p className="attendance-eyebrow">Sprint 4 · Module 03</p>
         <h1 className="attendance-title">Attendance</h1>
       </header>
 

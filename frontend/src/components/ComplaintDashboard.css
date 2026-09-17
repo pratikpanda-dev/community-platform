@@ -2,15 +2,6 @@
   margin-bottom: 20px;
 }
 
-.complaint-eyebrow {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin: 0 0 6px;
-}
-
 .complaint-title {
   font-size: 24px;
   font-weight: 700;
