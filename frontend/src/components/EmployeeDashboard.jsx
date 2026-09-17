@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { employeeApi } from "../api/employeeApi";
+import { staffProfileApi } from "../api/staffProfileApi";
 
 import "./EmployeeDashboard.css";
 
@@ -17,6 +18,15 @@ export default function EmployeeDashboard({ currentUser }) {
     });
 
     const [editingId, setEditingId] = useState(null);
+
+    const [staffProfileEmployee, setStaffProfileEmployee] = useState(null);
+    const [savingStaffProfile, setSavingStaffProfile] = useState(false);
+    const [staffProfileMessage, setStaffProfileMessage] = useState(null);
+    const [staffProfileForm, setStaffProfileForm] = useState({
+        staffType: "SECURITY",
+        shiftStart: "09:00",
+        shiftEnd: "17:00",
+    });
 
 
     useEffect(() => {
@@ -70,6 +80,44 @@ export default function EmployeeDashboard({ currentUser }) {
         setForm({ name: "", email: "", department: "", jobTitle: "", salary: "" });
     }
 
+    function openStaffProfileForm(employee) {
+        setStaffProfileEmployee(employee);
+        setStaffProfileMessage(null);
+        setStaffProfileForm({
+            staffType: employee.role === "WORKER" ? "WORKER" : "SECURITY",
+            shiftStart: "09:00",
+            shiftEnd: "17:00",
+        });
+    }
+
+    function closeStaffProfileForm() {
+        setStaffProfileEmployee(null);
+        setStaffProfileMessage(null);
+    }
+
+    function updateStaffProfileField(field, value) {
+        setStaffProfileForm((prev) => ({ ...prev, [field]: value }));
+    }
+
+    async function handleCreateStaffProfile(event) {
+        event.preventDefault();
+        setSavingStaffProfile(true);
+        setStaffProfileMessage(null);
+        try {
+            await staffProfileApi.create({
+                employee: { id: staffProfileEmployee.id },
+                staffType: staffProfileForm.staffType,
+                shiftStart: staffProfileForm.shiftStart,
+                shiftEnd: staffProfileForm.shiftEnd,
+            });
+            setStaffProfileMessage({ type: "success", text: "Staff profile saved" });
+        } catch (err) {
+            setStaffProfileMessage({ type: "error", text: err.message });
+        } finally {
+            setSavingStaffProfile(false);
+        }
+    }
+
     return (
         <div className="emp-dashboard">
             <div className="employee-toolbar">
@@ -111,6 +159,11 @@ export default function EmployeeDashboard({ currentUser }) {
                                     <button className="btn btn-primary" onClick={() => handleEdit(emp)}>
                                         Edit
                                     </button>
+                                    {currentUser.role === "ADMIN" && (emp.role === "SECURITY" || emp.role === "WORKER") && (
+                                        <button className="btn btn-ghost" onClick={() => openStaffProfileForm(emp)}>
+                                            Add Staff Profile
+                                        </button>
+                                    )}
                                     {currentUser.role === "ADMIN" && (
                                         <button className="btn btn-danger" onClick={() => handleDelete(emp.id, emp.role)}>
                                             Delete
@@ -159,6 +212,43 @@ export default function EmployeeDashboard({ currentUser }) {
                 <button className="btn btn-primary" onClick={handleUpdateEmployee}>Update</button>
                 <button className="btn btn-ghost" onClick={handleCancelEdit}>Cancel</button>
             </div>
+            )}
+
+            {staffProfileEmployee && (
+                <div className="staff-profile-modal-backdrop" role="presentation" onMouseDown={closeStaffProfileForm}>
+                    <form className="staff-profile-modal" onSubmit={handleCreateStaffProfile} onMouseDown={(event) => event.stopPropagation()}>
+                        <div className="staff-profile-modal-header">
+                            <div>
+                                <h2>Add Staff Profile</h2>
+                                <p>Set the duty type and shift for {staffProfileEmployee.name}.</p>
+                            </div>
+                            <button type="button" className="staff-profile-modal-close" onClick={closeStaffProfileForm} aria-label="Close add staff profile form">
+                                ×
+                            </button>
+                        </div>
+
+                        {staffProfileMessage && (
+                            <p className={`staff-profile-message staff-profile-message-${staffProfileMessage.type}`}>{staffProfileMessage.text}</p>
+                        )}
+
+                        <div className="staff-profile-form-grid">
+                            <label>Staff type
+                                <select value={staffProfileForm.staffType} onChange={(event) => updateStaffProfileField("staffType", event.target.value)}>
+                                    <option value="SECURITY">Security</option>
+                                    <option value="WORKER">Worker</option>
+                                    <option value="MAINTENANCE">Maintenance</option>
+                                </select>
+                            </label>
+                            <label>Shift start<input required type="time" value={staffProfileForm.shiftStart} onChange={(event) => updateStaffProfileField("shiftStart", event.target.value)} /></label>
+                            <label>Shift end<input required type="time" value={staffProfileForm.shiftEnd} onChange={(event) => updateStaffProfileField("shiftEnd", event.target.value)} /></label>
+                        </div>
+
+                        <div className="staff-profile-modal-actions">
+                            <button type="button" className="btn btn-ghost" onClick={closeStaffProfileForm} disabled={savingStaffProfile}>Close</button>
+                            <button type="submit" className="btn btn-primary" disabled={savingStaffProfile}>{savingStaffProfile ? "Saving…" : "Save Staff Profile"}</button>
+                        </div>
+                    </form>
+                </div>
             )}
         </div>
     );
